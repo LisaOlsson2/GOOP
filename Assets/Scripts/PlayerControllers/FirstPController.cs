@@ -20,20 +20,11 @@ public class FirstPController : CamController
     {
         base.OnEnable();
         Cursor.lockState = CursorLockMode.Locked;
+        ui.Hide(false);
     }
     
-    protected override void Update()
+    private void Update()
     {
-        base.Update();
-
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            if (ui.saver != null)
-            {
-                ui.saver.Exit();
-            }
-        }
-
         transform.localRotation = Quaternion.Euler(transform.localEulerAngles + new Vector3(-Input.GetAxis("Mouse Y"), Input.GetAxis("Mouse X"), 0) * sensitivity);
 
         if (transform.localEulerAngles.x < 180)
@@ -119,24 +110,34 @@ public class FirstPController : CamController
                 ui.saver.Save();
             }
         }
-        else if (hit.CompareTag("To3P"))
-        {
-            hit = null;
-            outlines[hitListPlace].enabled = false;
-
-            ChangePerspective(hitSaved.name);
-        }
         else if (hit.CompareTag("Item"))
         {
             ui.ItemFound(hit.gameObject.name);
         }
-        else if (ui.item != null && ui.item != "" && hit.CompareTag(ui.item))
+        else if (ui.item != "" && hit.CompareTag(ui.item))
         {
-            print(ui.item);
+            print("It got " + ui.item + "d");
+        }
+        else if (hit.CompareTag("SceneChanger"))
+        {
+            if (ui.saver != null)
+            {
+                ui.saver.ChangeGameScene(hit.gameObject.name.ToCharArray()[0]);
+            }
+            else
+            {
+                UnityEngine.SceneManagement.SceneManager.LoadScene("Scene" + hit.gameObject.name.ToCharArray()[0]);
+            }
+        }
+        else if (hit.CompareTag("Event"))
+        {
+            hit = null;
+            outlines[hitListPlace].enabled = false;
+            ui.StartEvent(hitSaved);
         }
     }
 
-    protected override CamController GetOther()
+    protected override CamController MakeOtherRef()
     {
         return GetComponent<ThirdPController>();
     }

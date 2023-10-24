@@ -7,23 +7,33 @@ public class UIController : MonoBehaviour
 {
     public Saver saver;
     public CamController enabledController;
-    public string item;
+    public string item = "";
 
     string tempItem;
 
     readonly float distance = 250, sensitivity = 4000;
 
     [SerializeField]
-    GameObject itemsMenu;
+    GameObject itemsMenu, pauseMenu;
 
     RectTransform middleThingy;
     Outline[] outlines;
     Collider2D[] colliders;
 
+    Image thisImage;
 
     //Temp
     [SerializeField]
     Image image;
+
+    private void Close()
+    {
+        middleThingy.anchoredPosition = Vector2.zero;
+        itemsMenu.SetActive(false);
+
+        // temp
+        SetItemUI();
+    }
 
     private void Start()
     {
@@ -52,6 +62,7 @@ public class UIController : MonoBehaviour
 
             if (!itemObject.activeSelf && itemObject.name == name)
             {
+                print("Found " + name);
                 itemObject.SetActive(true);
 
                 if (saver == null)
@@ -67,6 +78,14 @@ public class UIController : MonoBehaviour
 
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Cursor.lockState = CursorLockMode.None;
+            pauseMenu.SetActive(true);
+            Disable();
+            this.enabled = false;
+        }
+
         if (Input.GetKeyDown(KeyCode.Mouse1))
         {
             itemsMenu.SetActive(true);
@@ -74,7 +93,7 @@ public class UIController : MonoBehaviour
             middleThingy.anchoredPosition = Vector2.up * distance;
         }
 
-        if (Input.GetKey(KeyCode.Mouse1))
+        if (itemsMenu.activeSelf)
         {
             middleThingy.anchoredPosition += new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y")) * sensitivity * Time.deltaTime;
             middleThingy.anchoredPosition = middleThingy.anchoredPosition.normalized * distance;
@@ -85,23 +104,26 @@ public class UIController : MonoBehaviour
             item = tempItem;
             tempItem = "";
 
-            middleThingy.anchoredPosition = Vector2.zero;
-            itemsMenu.SetActive(false);
+            Close();
             enabledController.enabled = true;
-
-            string[] names = { "WateringCan", "Mp3Player", "Iron" };
-            Color[] colors = { Color.red, Color.green, Color.blue };
-
-            for (int i = 0; i < names.Length; i++)
-            {
-                if (names[i] == item)
-                {
-                    image.color = colors[i];
-                    return;
-                }
-            }
-            image.color = Color.clear;
         }
+    }
+
+    //Temp
+    private void SetItemUI()
+    {
+        string[] names = { "WateringCan", "Iron", "Mp3Player" };
+        Color[] colors = { Color.red, Color.green, Color.blue };
+
+        for (int i = 0; i < names.Length; i++)
+        {
+            if (names[i] == item)
+            {
+                image.color = colors[i];
+                return;
+            }
+        }
+        image.color = Color.clear;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -148,5 +170,31 @@ public class UIController : MonoBehaviour
         {
             tempItem = "";
         }
+    }
+
+    public void StartEvent(Transform t)
+    {
+        t.GetComponent<Events>().enabled = true;
+        Disable();
+    }
+
+    private void Disable()
+    {
+        enabledController.enabled = false;
+        if (itemsMenu.activeSelf)
+        {
+            item = "";
+            Close();
+        }
+    }
+
+    public void Hide(bool hide)
+    {
+        if (thisImage == null)
+        {
+            thisImage = GetComponent<Image>();
+        }
+
+        thisImage.enabled = !hide;
     }
 }

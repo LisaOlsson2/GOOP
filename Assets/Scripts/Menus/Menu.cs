@@ -9,16 +9,11 @@ public class Menu : MonoBehaviour
     [SerializeField]
     Selectable firstSelection;
 
-    [SerializeField]
-    Transform contineMenu;
-
     readonly KeyCode[] directionals = { KeyCode.A, KeyCode.S, KeyCode.W, KeyCode.D, KeyCode.RightArrow, KeyCode.LeftArrow, KeyCode.UpArrow, KeyCode.DownArrow };
     bool keys;
     Vector3 mousePos;
-    int saveSlots;
 
-    // Update is called once per frame
-    private void Update()
+    void Update()
     {
         if (Input.GetKeyDown(KeyCode.R))
         {
@@ -36,8 +31,9 @@ public class Menu : MonoBehaviour
             {
                 if (Input.GetKeyDown(k))
                 {
-                    firstSelection.Select();
-                    keys = true;
+                    Cursor.lockState = CursorLockMode.Locked;
+                    StartCoroutine(LockCursor());
+                    break;
                 }
             }
         }
@@ -45,12 +41,12 @@ public class Menu : MonoBehaviour
         {
             keys = false;
             EventSystem.current.SetSelectedGameObject(null);
+            Cursor.lockState = CursorLockMode.None;
         }
 
         mousePos = Input.mousePosition;
     }
 
-    
     public void MenuChanged(Selectable s)
     {
         firstSelection = s;
@@ -60,46 +56,16 @@ public class Menu : MonoBehaviour
             firstSelection.Select();
         }
     }
-    
 
-    public void NewSave()
+    IEnumerator LockCursor()
     {
-        Saver saver = FindObjectOfType<Saver>();
-
-
-        saveSlots = contineMenu.childCount - 1;
-        int saves = PlayerPrefs.GetInt("saves");
-
-        if (saves < saveSlots - 1)
-        {
-            saves++;
-            PlayerPrefs.SetInt("saves", saves);
-            PlayerPrefs.SetString("save" + saves, saver.startFormat);
-            saver.StartPlaying(saves);
-        }
-        else
-        {
-            print("No Saveslots left");
-        }
+        yield return new WaitUntil(CursorLocked);
+        firstSelection.Select();
+        keys = true;
     }
 
-    public void ShowSaves()
+    private bool CursorLocked()
     {
-        // starts at 1 because the first child is the back button
-        for (int i = 1; i < PlayerPrefs.GetInt("saves") + 1; i++)
-        {
-            contineMenu.GetChild(i).GetComponent<Text>().text = "Save " + i;
-            contineMenu.GetChild(i).GetComponent<Button>().interactable = true;
-        }
-    }
-
-    public void Continue(Transform save)
-    {
-        FindObjectOfType<Saver>().StartPlaying(save.GetSiblingIndex());
-    }
-
-    public void Quit()
-    {
-        Application.Quit();
+        return Input.mousePosition == mousePos;
     }
 }

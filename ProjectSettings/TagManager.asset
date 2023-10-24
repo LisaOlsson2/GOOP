@@ -5,11 +5,12 @@ TagManager:
   serializedVersion: 2
   tags:
   - Savepoint
-  - To3P
   - Item
   - WateringCan
   - Iron
   - Mp3Player
+  - SceneChanger
+  - Event
   layers:
   - Default
   - TransparentFX
