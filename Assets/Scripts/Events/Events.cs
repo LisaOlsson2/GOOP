@@ -7,7 +7,7 @@ public class Events : MonoBehaviour
     static GameObject ui;
 
     [SerializeField]
-    CamController toEnable; // this can be empty if the last step changes the scene
+    protected CamController toEnable; // this can be empty if the last step changes the scene
 
     protected int step;
 

@@ -5,19 +5,24 @@ using UnityEngine.UI;
 
 public class Balcony : Events
 {
-    readonly Vector3[] p = { new(4, 0, 5.5f), new(4, 0, 10) }, r = { Vector3.zero, new(0, 345, 0) };
-    readonly float[,] s = { { 10, 100 }, { 10, 100 } };
-
+    readonly Vector3[] p = { new(4, 0, 5.5f), new(4, 0, 10) }, r = { Vector3.zero, new(0, 345, 0) }, p2 = new Vector3[1], r2 = new Vector3[1];
+    readonly float[,] s = { { 15, 100 }, { 15, 100 } }, s2 = new float[1, 2];
+    
     readonly KeyCode[] interactKeys = { KeyCode.Mouse0, KeyCode.Space, KeyCode.Return };
 
-    readonly string[] lines = { "...", "why don't you join me for a bit?", "helo" };
+    readonly string[] lines = { "", "...", "Why don't you join me for a bit?", "You aren’t talking, but you’re saying a lot" };
 
     static Text text;
 
-    bool b;
+    bool endWhenDone;
 
     protected override void OnEnable()
     {
+        p2[0] = p[0];
+        r2[0] = r[0];
+        s2[0, 0] = s[0, 0];
+        s2[0, 1] = s[0, 1];
+
         base.OnEnable();
 
         StartCoroutine(MoveCam(p, r, s));
@@ -36,7 +41,7 @@ public class Balcony : Events
             {
                 if (Input.GetKeyDown(k))
                 {
-                    text.text = lines[step - 1];
+                    text.text = lines[step];
                     StepDone();
                 }
             }
@@ -52,26 +57,12 @@ public class Balcony : Events
 
             if (Input.GetKeyDown(KeyCode.S))
             {
-                Vector3[] p2 = { p[0] };
-                Vector3[] r2 = { r[0] };
-                float[,] s2 = { { s[0, 0], s[0, 1] } };
-
+                text.text = "";
                 StartCoroutine(MoveCam(p2, r2, s2));
-                b = true;
+                endWhenDone = true;
             }
         }
         else if (step == 4)
-        {
-            foreach (KeyCode k in interactKeys)
-            {
-                if (Input.GetKeyDown(k))
-                {
-                    text.text = lines[step - 2];
-                    StepDone();
-                }
-            }
-        }
-        else if (step == 5)
         {
             foreach (KeyCode k in interactKeys)
             {
@@ -89,19 +80,22 @@ public class Balcony : Events
     {
         base.StepDone();
 
-        if (step == 6)
+        if (endWhenDone)
         {
-            Vector3[] p2 = { p[0] };
-            Vector3[] r2 = { r[0] };
-            float[,] s2 = { { s[0, 0], s[0, 1] } };
-            StartCoroutine(MoveCam(p2, r2, s2));
-            b = true;
-        }
-
-        if (b)
-        {
-            b = false;
+            endWhenDone = false;
             AllDone();
+        }
+        else 
+        {
+            if (step == 4)
+            {
+                text.text = lines[step - 1];
+            }
+            else if (step == 5)
+            {
+                StartCoroutine(MoveCam(p2, r2, s2));
+                endWhenDone = true;
+            }
         }
     }
 
