@@ -15,12 +15,24 @@ public class FirstPController : CamController
     readonly float sensitivity = 8, speed = 25;
     readonly KeyCode forward = KeyCode.W, back = KeyCode.S, right = KeyCode.D, left = KeyCode.A;
 
+    [SerializeField]
+    float x1, x2, z1, z2;
+    bool useBordersX, useBordersZ;
 
     protected override void OnEnable()
     {
         base.OnEnable();
         Cursor.lockState = CursorLockMode.Locked;
         ui.Hide(false);
+
+        if (x1 != x2)
+        {
+            useBordersX = true;
+        }
+        if (z1 != z2)
+        {
+            useBordersZ = true;
+        }
     }
     
     private void Update()
@@ -57,6 +69,30 @@ public class FirstPController : CamController
         if (Input.GetKey(left))
         {
             transform.position -= transform.right * Time.deltaTime * speed;
+        }
+
+        if (useBordersX)
+        {
+            if (transform.position.x < x1)
+            {
+                transform.position = new Vector3(x1, transform.position.y, transform.position.z);
+            }
+            if (transform.position.x > x2)
+            {
+                transform.position = new Vector3(x2, transform.position.y, transform.position.z);
+            }
+        }
+
+        if (useBordersZ)
+        {
+            if (transform.position.z < z1)
+            {
+                transform.position = new Vector3(transform.position.x, transform.position.y, z1);
+            }
+            if (transform.position.z > z2)
+            {
+                transform.position = new Vector3(transform.position.x, transform.position.y, z2);
+            }
         }
 
 
