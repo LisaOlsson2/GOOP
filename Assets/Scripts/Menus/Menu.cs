@@ -13,16 +13,22 @@ public class Menu : MonoBehaviour
     bool keys;
     Vector3 mousePos;
 
+    [SerializeField]
+    bool b;
+
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.R))
+        if (b)
         {
-            for (int i = 1; i < PlayerPrefs.GetInt("saves") + 1; i++)
+            if (Input.GetKeyDown(KeyCode.R))
             {
-                PlayerPrefs.DeleteKey("save" + i);
-            }
+                for (int i = 1; i < PlayerPrefs.GetInt("saves") + 1; i++)
+                {
+                    PlayerPrefs.DeleteKey("save" + i);
+                }
 
-            PlayerPrefs.DeleteKey("saves");
+                PlayerPrefs.DeleteKey("saves");
+            }
         }
 
         if (!keys)

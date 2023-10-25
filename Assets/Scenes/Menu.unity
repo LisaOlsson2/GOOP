@@ -874,6 +874,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   firstSelection: {fileID: 289210071}
+  b: 1
   contineMenu: {fileID: 386633624}
 --- !u!1 &563478290
 GameObject:
@@ -1025,7 +1026,7 @@ GameObject:
   - component: {fileID: 643494065}
   - component: {fileID: 643494067}
   m_Layer: 5
-  m_Name: Settings
+  m_Name: '-'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1084,7 +1085,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: Settings
+  m_Text: 
 --- !u!222 &643494066
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1132,7 +1133,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 1
+  m_Interactable: 0
   m_TargetGraphic: {fileID: 643494065}
   m_OnClick:
     m_PersistentCalls:
@@ -1504,7 +1505,7 @@ GameObject:
   - component: {fileID: 1133044955}
   - component: {fileID: 1133044954}
   m_Layer: 5
-  m_Name: '-'
+  m_Name: Credits
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1569,7 +1570,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 0
+  m_Interactable: 1
   m_TargetGraphic: {fileID: 1133044955}
   m_OnClick:
     m_PersistentCalls:
@@ -1607,7 +1608,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: 
+  m_Text: Credits
 --- !u!222 &1133044956
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2023,7 +2024,7 @@ GameObject:
   - component: {fileID: 1498333220}
   - component: {fileID: 1498333222}
   m_Layer: 5
-  m_Name: Credits
+  m_Name: Settings
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2082,7 +2083,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: Credits
+  m_Text: Settings
 --- !u!222 &1498333221
 CanvasRenderer:
   m_ObjectHideFlags: 0

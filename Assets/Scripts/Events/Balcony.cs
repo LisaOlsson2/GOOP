@@ -85,7 +85,7 @@ public class Balcony : Events
             endWhenDone = false;
             AllDone();
         }
-        else 
+        else
         {
             if (step == 4)
             {
