@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class TV : Events
 {
-    readonly KeyCode[] exitKeys = { KeyCode.Backspace, KeyCode.Escape };
+    readonly KeyCode[] exitKeys = { KeyCode.Backspace, KeyCode.Escape }, gameKeys = { KeyCode.W, KeyCode.S, KeyCode.D, KeyCode.A };
 
     readonly Vector3[] p = { new(-20.3f, -3.4f, -13.3f) }, r = { new(0, 270, 0) }, beforePos = new Vector3[1], beforeRot = new Vector3[1];
     readonly float[,] s = { { 30, 100 } };
@@ -13,8 +13,6 @@ public class TV : Events
 
     [SerializeField]
     Sprite[] sprites;
-
-    readonly KeyCode[] gameKeys = { KeyCode.W, KeyCode.S, KeyCode.D, KeyCode.A };
 
 
     void Update()

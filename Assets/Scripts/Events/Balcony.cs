@@ -7,10 +7,8 @@ public class Balcony : Events
 {
     readonly Vector3[] p = { new(4, 0, 5.5f), new(4, 0, 10) }, r = { Vector3.zero, new(0, 345, 0) }, p2 = new Vector3[1], r2 = new Vector3[1];
     readonly float[,] s = { { 15, 100 }, { 15, 100 } }, s2 = new float[1, 2];
-    
-    readonly KeyCode[] interactKeys = { KeyCode.Mouse0, KeyCode.Space, KeyCode.Return };
 
-    readonly string[] lines = { "", "...", "Why don't you join me for a bit?", "You aren’t talking, but you’re saying a lot" };
+    readonly string[] lines = { "", "...", "Won't you join me for a bit?", "You aren’t talking, but you’re saying a lot" };
 
     static Text text;
 

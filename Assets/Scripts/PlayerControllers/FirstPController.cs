@@ -25,14 +25,8 @@ public class FirstPController : CamController
         Cursor.lockState = CursorLockMode.Locked;
         ui.Hide(false);
 
-        if (x1 != x2)
-        {
-            useBordersX = true;
-        }
-        if (z1 != z2)
-        {
-            useBordersZ = true;
-        }
+        useBordersX = x1 != x2;
+        useBordersZ = z1 != z2;
     }
     
     private void Update()
@@ -150,10 +144,6 @@ public class FirstPController : CamController
         {
             ui.ItemFound(hit.gameObject.name);
         }
-        else if (ui.item != "" && hit.CompareTag(ui.item))
-        {
-            print("It got " + ui.item + "d");
-        }
         else if (hit.CompareTag("SceneChanger"))
         {
             if (ui.saver != null)
@@ -165,7 +155,7 @@ public class FirstPController : CamController
                 UnityEngine.SceneManagement.SceneManager.LoadScene("Scene" + hit.gameObject.name.ToCharArray()[0]);
             }
         }
-        else if (hit.CompareTag("Event"))
+        else if (hit.CompareTag("Event") || (ui.item != null && ui.item != "" && hit.CompareTag(ui.item)))
         {
             hit = null;
             outlines[hitListPlace].enabled = false;

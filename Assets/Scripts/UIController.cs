@@ -7,7 +7,7 @@ public class UIController : MonoBehaviour
 {
     public Saver saver;
     public CamController enabledController;
-    public string item = "";
+    public string item;
 
     string tempItem;
 

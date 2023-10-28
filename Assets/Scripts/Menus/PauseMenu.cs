@@ -20,5 +20,9 @@ public class PauseMenu : Menu
         {
             ui.saver.Exit();
         }
+        else
+        {
+            UnityEngine.SceneManagement.SceneManager.LoadScene("Menu");
+        }
     }
 }
