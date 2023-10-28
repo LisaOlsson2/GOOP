@@ -65,4 +65,9 @@ public class Saver : MonoBehaviour
     {
         progress[item + 1] = '1';
     }
+
+    public void Credits()
+    {
+        SceneManager.LoadScene("Credits");
+    }
 }
