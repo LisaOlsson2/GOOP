@@ -13,23 +13,9 @@ public class Menu : MonoBehaviour
     bool keys;
     Vector3 mousePos;
 
-    [SerializeField]
-    bool b;
 
     void Update()
     {
-        if (b)
-        {
-            if (Input.GetKeyDown(KeyCode.R))
-            {
-                for (int i = 1; i < PlayerPrefs.GetInt("saves") + 1; i++)
-                {
-                    PlayerPrefs.DeleteKey("save" + i);
-                }
-
-                PlayerPrefs.DeleteKey("saves");
-            }
-        }
 
         if (!keys)
         {
@@ -46,7 +32,7 @@ public class Menu : MonoBehaviour
         else if (Input.mousePosition != mousePos)
         {
             keys = false;
-            EventSystem.current.SetSelectedGameObject(null);
+            UnselectCurrent();
             Cursor.lockState = CursorLockMode.None;
         }
 
@@ -73,5 +59,10 @@ public class Menu : MonoBehaviour
     private bool CursorLocked()
     {
         return Input.mousePosition == mousePos;
+    }
+
+    protected void UnselectCurrent()
+    {
+        EventSystem.current.SetSelectedGameObject(null);
     }
 }

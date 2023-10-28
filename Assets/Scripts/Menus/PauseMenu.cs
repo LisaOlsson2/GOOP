@@ -9,6 +9,7 @@ public class PauseMenu : Menu
 
     public void Return()
     {
+        UnselectCurrent();
         ui.enabled = true;
         ui.enabledController.enabled = true;
         gameObject.SetActive(false);

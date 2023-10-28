@@ -31,19 +31,26 @@ public class MainMenu : Menu
         }
     }
 
-    public void ShowSaves()
+    public void ShowSaves(Transform menu)
     {
         // starts at 1 because the first child is the back button
         for (int i = 1; i < PlayerPrefs.GetInt("saves") + 1; i++)
         {
-            contineMenu.GetChild(i).GetComponent<Text>().text = "Save " + i;
-            contineMenu.GetChild(i).GetComponent<Button>().interactable = true;
+            menu.GetChild(i).GetComponent<Text>().text = "Save " + i + "\n" + PlayerPrefs.GetString("save" + i);
+            menu.GetChild(i).GetComponent<Button>().interactable = true;
         }
     }
 
     public void Continue(Transform save)
     {
         FindObjectOfType<Saver>().StartPlaying(save.GetSiblingIndex());
+    }
+
+    public void ClearSave(Text save)
+    {
+        PlayerPrefs.SetString("save" + save.transform.GetSiblingIndex(), FindObjectOfType<Saver>().startFormat);
+        save.text = "Save " + save.transform.GetSiblingIndex() + "\n" + PlayerPrefs.GetString("save" + save.transform.GetSiblingIndex());
+        UnselectCurrent();
     }
 
     public void Quit()

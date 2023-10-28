@@ -2171,58 +2171,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 3ab59a39343996e4ca9b5565320f9066, type: 3}
       propertyPath: m_Layer
-      value: 6
-      objectReference: {fileID: 0}
-    - target: {fileID: 919132149155446097, guid: 3ab59a39343996e4ca9b5565320f9066, type: 3}
-      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 3ab59a39343996e4ca9b5565320f9066, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 3ab59a39343996e4ca9b5565320f9066, type: 3}
       propertyPath: m_TagString
-      value: WateringCan
+      value: Untagged
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3ab59a39343996e4ca9b5565320f9066, type: 3}
---- !u!1 &1956478735 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 3ab59a39343996e4ca9b5565320f9066, type: 3}
-  m_PrefabInstance: {fileID: 1956478734}
-  m_PrefabAsset: {fileID: 0}
---- !u!23 &1956478736 stripped
-MeshRenderer:
-  m_CorrespondingSourceObject: {fileID: -7511558181221131132, guid: 3ab59a39343996e4ca9b5565320f9066, type: 3}
-  m_PrefabInstance: {fileID: 1956478734}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1956478737
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1956478735}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 523e43a991347214abc7e4833be79bf3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  outlineColor: {r: 1, g: 1, b: 1, a: 1}
-  outlinePixelWidth: 10
-  renderers:
-  - {fileID: 1956478736}
-  outlineShader: {fileID: 4800000, guid: a75df31070670704eabf4492fae8d007, type: 3}
---- !u!65 &1956478740
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1956478735}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 2.212213, y: 2.0986009, z: 1.1158023}
-  m_Center: {x: -0.0000005364418, y: 0.16937318, z: 0.05790116}
 --- !u!1 &2000917348
 GameObject:
   m_ObjectHideFlags: 0
