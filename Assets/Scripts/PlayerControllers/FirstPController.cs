@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FirstPController : CamController
+abstract public class FirstPController : CamController
 {
     // interacting
     readonly float reach = 20;
@@ -12,24 +12,19 @@ public class FirstPController : CamController
     readonly List<Outlines> outlines = new();
 
     // movement
-    readonly float sensitivity = 8, speed = 25;
-    readonly KeyCode forward = KeyCode.W, back = KeyCode.S, right = KeyCode.D, left = KeyCode.A;
+    readonly float sensitivity = 8;
+    protected readonly KeyCode forward = KeyCode.W, back = KeyCode.S, right = KeyCode.D, left = KeyCode.A;
+    protected Vector3 forward2;
 
-    [SerializeField]
-    float x1, x2, z1, z2;
-    bool useBordersX, useBordersZ;
 
     protected override void OnEnable()
     {
         base.OnEnable();
         Cursor.lockState = CursorLockMode.Locked;
         ui.Hide(false);
-
-        useBordersX = x1 != x2;
-        useBordersZ = z1 != z2;
     }
     
-    private void Update()
+    protected virtual void Update()
     {
         transform.localRotation = Quaternion.Euler(transform.localEulerAngles + new Vector3(-Input.GetAxis("Mouse Y"), Input.GetAxis("Mouse X"), 0) * sensitivity);
 
@@ -44,51 +39,6 @@ public class FirstPController : CamController
         {
             transform.localRotation = Quaternion.Euler(275, transform.localEulerAngles.y, 0);
         }
-
-        Vector3 forward2 = new(Mathf.Sin(Mathf.Deg2Rad * transform.localEulerAngles.y), 0, Mathf.Cos(Mathf.Deg2Rad * transform.localEulerAngles.y));
-
-        if (Input.GetKey(forward))
-        {
-            transform.position += forward2 * Time.deltaTime * speed;
-        }
-        if (Input.GetKey(back))
-        {
-            transform.position -= forward2 * Time.deltaTime * speed;
-        }
-
-        if (Input.GetKey(right))
-        {
-            transform.position += transform.right * Time.deltaTime * speed;
-        }
-        if (Input.GetKey(left))
-        {
-            transform.position -= transform.right * Time.deltaTime * speed;
-        }
-
-        if (useBordersX)
-        {
-            if (transform.position.x < x1)
-            {
-                transform.position = new Vector3(x1, transform.position.y, transform.position.z);
-            }
-            if (transform.position.x > x2)
-            {
-                transform.position = new Vector3(x2, transform.position.y, transform.position.z);
-            }
-        }
-
-        if (useBordersZ)
-        {
-            if (transform.position.z < z1)
-            {
-                transform.position = new Vector3(transform.position.x, transform.position.y, z1);
-            }
-            if (transform.position.z > z2)
-            {
-                transform.position = new Vector3(transform.position.x, transform.position.y, z2);
-            }
-        }
-
 
         if (Physics.Raycast(transform.position, transform.forward, out RaycastHit info, reach, LayerMask.GetMask("LeftClickable")))
         {
@@ -113,6 +63,8 @@ public class FirstPController : CamController
             hit = null;
             outlines[hitListPlace].enabled = false;
         }
+
+        forward2 = new(Mathf.Sin(Mathf.Deg2Rad * transform.localEulerAngles.y), 0, Mathf.Cos(Mathf.Deg2Rad * transform.localEulerAngles.y));
     }
 
     private Outlines GetOutlines(Transform hit)
@@ -163,8 +115,4 @@ public class FirstPController : CamController
         }
     }
 
-    protected override CamController MakeOtherRef()
-    {
-        return GetComponent<ThirdPController>();
-    }
 }

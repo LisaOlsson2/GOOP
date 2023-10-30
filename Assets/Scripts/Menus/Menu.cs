@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-public class Menu : MonoBehaviour
+abstract public class Menu : MonoBehaviour
 {
     [SerializeField]
     Selectable firstSelection;

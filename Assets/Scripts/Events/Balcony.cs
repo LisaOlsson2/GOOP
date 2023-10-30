@@ -8,7 +8,7 @@ public class Balcony : Events
     readonly Vector3[] p = { new(4, 0, 5.5f), new(4, 0, 10) }, r = { Vector3.zero, new(0, 345, 0) }, p2 = new Vector3[1], r2 = new Vector3[1];
     readonly float[,] s = { { 15, 100 }, { 15, 100 } }, s2 = new float[1, 2];
 
-    readonly string[] lines = { "", "...", "Won't you join me for a bit?", "You aren’t talking, but you’re saying a lot" };
+    readonly string[] lines = { "", "...", "Won't you join me for a bit?", "...", "blabalbabalb", "You aren’t talking, but you’re saying a lot", "blabalbabalb", "" };
 
     static Text text;
 
@@ -23,7 +23,7 @@ public class Balcony : Events
 
         base.OnEnable();
 
-        StartCoroutine(MoveCam(p, r, s));
+        StartCoroutine(MoveCam(toEnable.transform, p, r, s));
 
         if (text == null)
         {
@@ -33,7 +33,7 @@ public class Balcony : Events
 
     private void Update()
     {
-        if (step > 0 && step < 3)
+        if ((step > 0 && step < 3) || (step > 3 && step < lines.Length))
         {
             foreach (KeyCode k in interactKeys)
             {
@@ -49,27 +49,15 @@ public class Balcony : Events
             if (Input.GetKeyDown(KeyCode.W))
             {
                 text.text = "";
-                int[] nexts = { 1, 2 };
-                StartCoroutine(SwitchChildren(0, 0.5f, nexts));
+                int[] nexts = { 2, 3 };
+                StartCoroutine(SwitchChildren(1, 0.5f, nexts));
             }
 
             if (Input.GetKeyDown(KeyCode.S))
             {
                 text.text = "";
-                StartCoroutine(MoveCam(p2, r2, s2));
+                StartCoroutine(MoveCam(toEnable.transform, p2, r2, s2));
                 endWhenDone = true;
-            }
-        }
-        else if (step == 4)
-        {
-            foreach (KeyCode k in interactKeys)
-            {
-                if (Input.GetKeyDown(k))
-                {
-                    int[] nexts = { 1, 0 };
-                    StartCoroutine(SwitchChildren(2, 0.5f, nexts));
-                    text.text = "";
-                }
             }
         }
     }
@@ -89,9 +77,14 @@ public class Balcony : Events
             {
                 text.text = lines[step - 1];
             }
-            else if (step == 5)
+            else if (step == lines.Length)
             {
-                StartCoroutine(MoveCam(p2, r2, s2));
+                int[] nexts = { 2, 1 };
+                StartCoroutine(SwitchChildren(3, 0.5f, nexts));
+            }
+            else if (step == lines.Length + 1)
+            {
+                StartCoroutine(MoveCam(toEnable.transform, p2, r2, s2));
                 endWhenDone = true;
             }
         }

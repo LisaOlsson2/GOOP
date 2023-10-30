@@ -23,7 +23,7 @@ public class TV : Events
             {
                 if (Input.GetKeyDown(k))
                 {
-                    StartCoroutine(MoveCam(beforePos, beforeRot, s));
+                    StartCoroutine(MoveCam(toEnable.transform, beforePos, beforeRot, s));
                 }
             }
 
@@ -50,7 +50,7 @@ public class TV : Events
         beforePos[0] = toEnable.transform.position;
         beforeRot[0] = toEnable.transform.localEulerAngles;
 
-        StartCoroutine(MoveCam(p, r, s));
+        StartCoroutine(MoveCam(toEnable.transform, p, r, s));
     }
 
     protected override void StepDone()

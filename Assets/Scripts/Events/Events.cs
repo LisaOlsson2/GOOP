@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Events : MonoBehaviour
+abstract public class Events : MonoBehaviour
 {
     protected readonly KeyCode[] interactKeys = { KeyCode.Mouse0, KeyCode.Space, KeyCode.Return };
     static GameObject ui;
@@ -26,36 +26,34 @@ public class Events : MonoBehaviour
         step++;
     }
 
-    protected IEnumerator MoveCam(Vector3[] pos, Vector3[] rot, float[,] speeds)
+    protected IEnumerator MoveCam(Transform thing, Vector3[] pos, Vector3[] rot, float[,] speeds)
     {
-        Transform cam = toEnable.transform;
-
         for (int i = 0; i < pos.Length; i++)
         {
-            Vector3 v = pos[i] - cam.position;
-            Vector3 r = rot[i] - cam.localEulerAngles;
+            Vector3 v = pos[i] - thing.position;
+            Vector3 r = rot[i] - thing.localEulerAngles;
             float[] f2 = { r.x, r.y, r.z };
             r = CheckChangeRotation(f2);
             while (v.magnitude > 0.5 || r.magnitude > 2)
             {
                 if (r.magnitude > 2)
                 {
-                    cam.localRotation = Quaternion.Euler(cam.localEulerAngles + r.normalized * Time.deltaTime * speeds[i, 1]);
-                    r = rot[i] - cam.localEulerAngles;
+                    thing.localRotation = Quaternion.Euler(thing.localEulerAngles + r.normalized * Time.deltaTime * speeds[i, 1]);
+                    r = rot[i] - thing.localEulerAngles;
                     float[] f = { r.x, r.y, r.z };
                     r = CheckChangeRotation(f);
                 }
 
                 if (v.magnitude > 0.5)
                 {
-                    cam.position += v.normalized * Time.deltaTime * speeds[i, 0];
-                    v = pos[i] - cam.position;
+                    thing.position += v.normalized * Time.deltaTime * speeds[i, 0];
+                    v = pos[i] - thing.position;
                 }
 
                 yield return null;
             }
-            cam.position = pos[i];
-            cam.localRotation = Quaternion.Euler(rot[i]);
+            thing.position = pos[i];
+            thing.localRotation = Quaternion.Euler(rot[i]);
         }
         StepDone();
     }

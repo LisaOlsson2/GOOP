@@ -16,6 +16,7 @@ public class Plant : Events
         beforeRot = toEnable.transform.localEulerAngles;
 
         toEnable.transform.localRotation = Quaternion.Euler(Vector3.zero);
+        toEnable.transform.right = new Vector3(transform.position.x - toEnable.transform.position.x, 0, transform.position.z - toEnable.transform.position.z);
         toEnable.transform.position += (transform.position - toEnable.transform.position) - toEnable.transform.forward * 25 + toEnable.transform.up * 3;
         StartCoroutine(Wait());
     }

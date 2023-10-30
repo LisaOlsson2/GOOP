@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class ThirdPController : CamController
 {
+    Transform player;
+
     protected override void OnEnable()
     {
         base.OnEnable();
@@ -13,17 +15,6 @@ public class ThirdPController : CamController
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            transform.position = new Vector3(transform.position.x, 0, transform.position.z);
-            GetOther().enabled = true;
-            this.enabled = false;
-        }
+        
     }
-
-    protected override CamController MakeOtherRef()
-    {
-        return GetComponent<FirstPController>();
-    }
-
 }
