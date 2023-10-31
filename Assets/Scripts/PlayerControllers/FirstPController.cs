@@ -5,7 +5,7 @@ using UnityEngine;
 abstract public class FirstPController : CamController
 {
     // interacting
-    readonly float reach = 20;
+    readonly float reach = 30;
     Transform hit;
     int hitListPlace;
     readonly List<Transform> hits = new();
@@ -13,14 +13,12 @@ abstract public class FirstPController : CamController
 
     // movement
     readonly float sensitivity = 8;
-    protected readonly KeyCode forward = KeyCode.W, back = KeyCode.S, right = KeyCode.D, left = KeyCode.A;
     protected Vector3 forward2;
 
 
     protected override void OnEnable()
     {
         base.OnEnable();
-        Cursor.lockState = CursorLockMode.Locked;
         ui.Hide(false);
     }
     

@@ -6,7 +6,10 @@ public class FirstPMovementP : FirstPController
 {
     Rigidbody rb;
 
-    readonly float speed = 1000;
+    readonly float speed = 2000;
+
+    Vector3 direction;
+
 
     protected override void OnEnable()
     {
@@ -23,17 +26,25 @@ public class FirstPMovementP : FirstPController
     {
         base.Update();
 
-        if (Input.GetKeyDown(forward))
-        {
-            rb.AddForce(forward2 * speed);
-        }
+        direction = Vector3.zero;
+
         if (Input.GetKey(forward))
         {
-            rb.AddForce(forward2 * speed * Time.deltaTime);
+            direction += forward2;
         }
-        if (Input.GetKeyUp(forward))
+        if (Input.GetKey(back))
         {
-            rb.velocity = Vector3.zero;
+            direction -= forward2;
         }
+        if (Input.GetKey(right))
+        {
+            direction += transform.right;
+        }
+        if (Input.GetKey(left))
+        {
+            direction -= transform.right;
+        }
+
+        rb.AddForce(direction * speed * Time.deltaTime);
     }
 }
