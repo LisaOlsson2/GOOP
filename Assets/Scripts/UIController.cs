@@ -88,6 +88,7 @@ public class UIController : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Mouse1))
         {
+            thisImage.enabled = true;
             itemsMenu.SetActive(true);
             enabledController.enabled = false;
             middleThingy.anchoredPosition = Vector2.up * distance;

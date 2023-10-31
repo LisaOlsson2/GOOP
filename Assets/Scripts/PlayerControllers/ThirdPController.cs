@@ -6,7 +6,7 @@ public class ThirdPController : CamController
 {
     [SerializeField]
     Transform player;
-    readonly float speed = 5;
+    readonly float speed = 5, followSpeed = 1;
 
     protected override void OnEnable()
     {
@@ -18,20 +18,22 @@ public class ThirdPController : CamController
     {
         if (Input.GetKey(forward))
         {
-            player.transform.position += Vector3.up * speed * Time.deltaTime;
+            player.position += Vector3.up * speed * Time.deltaTime;
         }
         if (Input.GetKey(back))
         {
-            player.transform.position += Vector3.down * speed * Time.deltaTime;
+            player.position += Vector3.down * speed * Time.deltaTime;
         }
         if (Input.GetKey(right))
         {
-            player.transform.position += Vector3.right * speed * Time.deltaTime;
+            player.position += Vector3.right * speed * Time.deltaTime;
         }
         if (Input.GetKey(left))
         {
-            player.transform.position += Vector3.left * speed * Time.deltaTime;
+            player.position += Vector3.left * speed * Time.deltaTime;
         }
 
+
+        transform.position += new Vector3(player.position.x - transform.position.x, player.position.y - transform.position.y, 0) * followSpeed * Time.deltaTime;
     }
 }

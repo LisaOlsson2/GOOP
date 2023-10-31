@@ -3,10 +3,30 @@ using UnityEngine;
 
 public class Plant : Events
 {
+    [SerializeField]
+    Material death;
+
     Vector3 beforePos, beforeRot;
 
     [SerializeField]
     GameObject c, w;
+
+    private void Awake()
+    {
+        Saver saver = FindObjectOfType<Saver>();
+
+        if (saver != null)
+        {
+            foreach (int i in saver.GetItems())
+            {
+                if (i == 0)
+                {
+                    GetComponent<Renderer>().material = death;
+                    break;
+                }
+            }
+        }
+    }
 
     protected override void OnEnable()
     {
