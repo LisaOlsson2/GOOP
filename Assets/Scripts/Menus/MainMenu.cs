@@ -36,7 +36,14 @@ public class MainMenu : Menu
         // starts at 1 because the first child is the back button
         for (int i = 1; i < PlayerPrefs.GetInt("saves") + 1; i++)
         {
-            menu.GetChild(i).GetComponent<Text>().text = "Save " + i + "\n" + PlayerPrefs.GetString("save" + i);
+            string add = "";
+
+            if (menu.gameObject.name == "Clear")
+            {
+                add = "\n" + PlayerPrefs.GetString("save" + i);
+            }
+
+            menu.GetChild(i).GetComponent<Text>().text = "Save " + i + add;
             menu.GetChild(i).GetComponent<Button>().interactable = true;
         }
     }

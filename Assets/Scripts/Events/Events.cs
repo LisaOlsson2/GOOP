@@ -5,7 +5,7 @@ using UnityEngine;
 abstract public class Events : MonoBehaviour
 {
     protected readonly KeyCode[] interactKeys = { KeyCode.Mouse0, KeyCode.Space, KeyCode.Return };
-    static GameObject ui;
+    static UIController ui;
 
     [SerializeField]
     protected CamController toEnable; // this can be empty if the last step changes the scene
@@ -14,11 +14,12 @@ abstract public class Events : MonoBehaviour
 
     protected virtual void OnEnable()
     {
-        if (ui == null)
+        GetUI().gameObject.SetActive(false);
+
+        if (toEnable == null)
         {
-            ui = FindObjectOfType<UIController>().gameObject;
+            toEnable = ui.enabledController;
         }
-        ui.SetActive(false);
     }
 
     protected virtual void StepDone()
@@ -73,8 +74,22 @@ abstract public class Events : MonoBehaviour
     protected void AllDone()
     {
         step = 0;
-        ui.SetActive(true);
+        ui.gameObject.SetActive(true);
         toEnable.enabled = true;
         this.enabled = false;
+    }
+
+    protected void EventStartedElseWhere()
+    {
+        GetUI().StartEvent(this);
+    }
+
+    UIController GetUI()
+    {
+        if (ui == null)
+        {
+            ui = FindObjectOfType<UIController>();
+        }
+        return ui;
     }
 }

@@ -173,9 +173,9 @@ public class UIController : MonoBehaviour
         }
     }
 
-    public void StartEvent(Transform t)
+    public void StartEvent(Events e)
     {
-        t.GetComponent<Events>().enabled = true;
+        e.enabled = true;
         Disable();
     }
 

@@ -109,7 +109,7 @@ abstract public class FirstPController : CamController
         {
             hit = null;
             outlines[hitListPlace].enabled = false;
-            ui.StartEvent(hitSaved);
+            ui.StartEvent(hitSaved.GetComponent<Events>());
         }
     }
 
