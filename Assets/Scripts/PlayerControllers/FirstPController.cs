@@ -19,6 +19,7 @@ abstract public class FirstPController : CamController
     protected override void OnEnable()
     {
         base.OnEnable();
+        Cursor.lockState = CursorLockMode.Locked;
         ui.Hide(false);
     }
     
@@ -38,7 +39,7 @@ abstract public class FirstPController : CamController
             transform.localRotation = Quaternion.Euler(275, transform.localEulerAngles.y, 0);
         }
 
-        if (Physics.Raycast(transform.position, transform.forward, out RaycastHit info, reach, LayerMask.GetMask("LeftClickable")))
+        if (Physics.Raycast(transform.position, transform.forward, out RaycastHit info, reach, LayerMask.GetMask("Outliner")))
         {
             if (info.transform != hit)
             {
@@ -60,6 +61,13 @@ abstract public class FirstPController : CamController
         {
             hit = null;
             outlines[hitListPlace].enabled = false;
+        }
+        else if (Input.GetKeyDown(KeyCode.Mouse0))
+        {
+            if (Physics.Raycast(transform.position, transform.forward, out RaycastHit info2, reach, LayerMask.GetMask("LeftClickable")))
+            {
+                Interact(info2.transform);
+            }
         }
 
         forward2 = new(Mathf.Sin(Mathf.Deg2Rad * transform.localEulerAngles.y), 0, Mathf.Cos(Mathf.Deg2Rad * transform.localEulerAngles.y));
@@ -83,32 +91,36 @@ abstract public class FirstPController : CamController
 
     private void Interact(Transform hitSaved)
     {
-        if (hit.CompareTag("Savepoint"))
+        if (hitSaved.CompareTag("Savepoint"))
         {
             if (ui.saver != null)
             {
                 ui.saver.Save();
             }
         }
-        else if (hit.CompareTag("Item"))
+        else if (hitSaved.CompareTag("Item"))
         {
-            ui.ItemFound(hit.gameObject.name);
+            ui.ItemFound(hitSaved.gameObject.name);
+            Destroy(hitSaved.gameObject);
         }
-        else if (hit.CompareTag("SceneChanger"))
+        else if (hitSaved.CompareTag("SceneChanger"))
         {
             if (ui.saver != null)
             {
-                ui.saver.ChangeGameScene(hit.gameObject.name.ToCharArray()[0]);
+                ui.saver.ChangeGameScene(hitSaved.gameObject.name.ToCharArray()[0]);
             }
             else
             {
-                UnityEngine.SceneManagement.SceneManager.LoadScene("Scene" + hit.gameObject.name.ToCharArray()[0]);
+                UnityEngine.SceneManagement.SceneManager.LoadScene("Scene" + hitSaved.gameObject.name.ToCharArray()[0]);
             }
         }
-        else if (hit.CompareTag("Event") || (ui.item != null && ui.item != "" && hit.CompareTag(ui.item)))
+        else if (hitSaved.CompareTag("Event") || (ui.item != null && ui.item != "" && hitSaved.CompareTag(ui.item)))
         {
-            hit = null;
-            outlines[hitListPlace].enabled = false;
+            if (hit != null)
+            {
+                hit = null;
+                outlines[hitListPlace].enabled = false;
+            }
             ui.StartEvent(hitSaved.GetComponent<Events>());
         }
     }

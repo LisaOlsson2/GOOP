@@ -5,59 +5,72 @@ using UnityEngine.UI;
 
 public class Balcony : Events
 {
-    readonly Vector3[] p = { new(4, 0, 5.5f), new(4, 0, 10) }, r = { Vector3.zero, new(0, 345, 0) }, p2 = new Vector3[1], r2 = new Vector3[1];
-    readonly float[,] s = { { 15, 100 }, { 15, 100 } }, s2 = new float[1, 2];
+    readonly string[] lines = { "...", "Won't you join me for a bit?", "blabalbabalb", "You aren’t talking, but you’re saying a lot", "blabalbabalb"};
+    readonly float delay = 0.05f;
 
-    readonly string[] lines = { "", "...", "Won't you join me for a bit?", "...", "blabalbabalb", "You aren’t talking, but you’re saying a lot", "blabalbabalb", "" };
+    readonly float[,] doorSpeed = { { 10, 100 } }, camSpeed = { { 5, 50}, { 3, 30} };
+    readonly Vector3[] doorPos = new Vector3[1], doorRot = { Vector3.up * 90 }, camPos = new Vector3[2], camRot = { Vector3.up * 90, Vector3.up * 90};
 
-    static Text text;
+    Text text;
+    Animator animator;
+    BoxCollider bc;
 
-    bool endWhenDone;
+    private void Start()
+    {
+        text = GameObject.Find("TextBox").GetComponent<Text>();
+        animator = GetComponent<Animator>();
+        bc = GetComponent<BoxCollider>();
+    }
 
     protected override void OnEnable()
     {
-        p2[0] = p[0];
-        r2[0] = r[0];
-        s2[0, 0] = s[0, 0];
-        s2[0, 1] = s[0, 1];
-
-        base.OnEnable();
-
-        StartCoroutine(MoveCam(toEnable.transform, p, r, s));
-
-        if (text == null)
+        if (step == 0)
         {
-            text = GameObject.Find("TextBox").GetComponent<Text>();
+            base.OnEnable();
+
+            transform.SetParent(null);
+
+            doorPos[0] = new Vector3(1.5f, 0, toEnable.transform.position.z);
+            StartCoroutine(MoveThing(transform, doorPos, doorRot, doorSpeed));
+        }
+        else if (step == 2)
+        {
+            AbleControllers(false);
+
+            camPos[0] = new Vector3(1, toEnable.transform.position.y, transform.position.z);
+            camPos[1] = new Vector3(1.5f, toEnable.transform.position.y, transform.position.z);
+
+            StartCoroutine(MoveThing(toEnable.transform, camPos, camRot, camSpeed));
+        }
+        else
+        {
+            print("BAD");
         }
     }
 
     private void Update()
     {
-        if ((step > 0 && step < 3) || (step > 3 && step < lines.Length))
-        {
-            foreach (KeyCode k in interactKeys)
-            {
-                if (Input.GetKeyDown(k))
-                {
-                    text.text = lines[step];
-                    StepDone();
-                }
-            }
-        }
-        else if (step == 3)
+        if (step == 5)
         {
             if (Input.GetKeyDown(KeyCode.W))
             {
                 text.text = "";
-                int[] nexts = { 2, 3 };
-                StartCoroutine(SwitchChildren(1, 0.5f, nexts));
+                StartCoroutine(ChildrenOfChild(new int[][] { new int[] { 1}, new int[] {1, 2} }));
+                step = 7;
             }
-
-            if (Input.GetKeyDown(KeyCode.S))
+            else if (Input.GetKeyDown(KeyCode.S))
             {
                 text.text = "";
-                StartCoroutine(MoveCam(toEnable.transform, p2, r2, s2));
-                endWhenDone = true;
+                End();
+            }
+        }
+        else if (step == 9)
+        {
+            if (Input.GetKeyDown(KeyCode.Mouse0))
+            {
+                text.text = "";
+                StartCoroutine(ChildrenOfChild(new int[][] { new int[]{2,1}, new int[] { 1 }}));
+                step = 10;
             }
         }
     }
@@ -66,40 +79,109 @@ public class Balcony : Events
     {
         base.StepDone();
 
-        if (endWhenDone)
+        if (step == 1)
         {
-            endWhenDone = false;
-            AllDone();
+            animator.enabled = true;
         }
-        else
+        else if (step == 2)
         {
-            if (step == 4)
-            {
-                text.text = lines[step - 1];
-            }
-            else if (step == lines.Length)
-            {
-                int[] nexts = { 2, 1 };
-                StartCoroutine(SwitchChildren(3, 0.5f, nexts));
-            }
-            else if (step == lines.Length + 1)
-            {
-                StartCoroutine(MoveCam(toEnable.transform, p2, r2, s2));
-                endWhenDone = true;
-            }
+            bc.size = new Vector3(3, 6, bc.size.z);
+            enabled = false;
+        }
+        else if (step == 3)
+        {
+            transform.GetChild(0).gameObject.SetActive(true);
+        }
+        else if (step == 4)
+        {
+            StartCoroutine(ShowText(0, 1));
+        }
+        else if (step == 7)
+        {
+            transform.GetChild(0).gameObject.SetActive(false);
+            step = 2;
+            AbleControllers(true);
+            enabled = false;
+        }
+        else if (step == 8)
+        {
+            StartCoroutine(ShowText(2, lines.Length - 1));
+        }
+        else if (step == 11)
+        {
+            End();
         }
     }
 
-    IEnumerator SwitchChildren(int current, float time, int[] nexts)
+    IEnumerator ShowText(int start, int end)
     {
-        for (int i = 0; i < nexts.Length; i++)
+        for (int i = start; i <= end; i++)
         {
-            transform.GetChild(0).GetChild(current).gameObject.SetActive(false);
-            current = nexts[i];
-            transform.GetChild(0).GetChild(current).gameObject.SetActive(true);
-            yield return new WaitForSeconds(time);
-        }
+            char[] brokenLine = lines[i].ToCharArray();
 
+            foreach (char c in brokenLine)
+            {
+                text.text += c;
+                yield return new WaitForSeconds(delay);
+            }
+
+            if (i < end)
+            {
+                yield return new WaitUntil(Clicked);
+                text.text = "";
+            }
+        }
         StepDone();
     }
+
+    IEnumerator ChildrenOfChild(int[][] indexes)
+    {
+        foreach (int[] ints in indexes)
+        {
+            foreach (int i in ints)
+            {
+                GameObject g = transform.GetChild(0).GetChild(i).gameObject;
+                g.SetActive(!g.activeSelf);
+            }
+            yield return new WaitForSeconds(0.4f);
+        }
+        StepDone();
+    }
+
+    void End()
+    {
+        step = 6;
+        StartCoroutine(MoveThing(toEnable.transform, new Vector3[] { camPos[0] }, new Vector3[] { camRot[0] }, new float[,] { { camSpeed[1, 0], camSpeed[1, 1] } }));
+    }
+
+
+    bool Clicked()
+    {
+        return Input.GetKeyDown(KeyCode.Mouse0);
+    }
+
+    public void AnimationFinished(string animation)
+    {
+        if (animation == "Door")
+        {
+            StepDone();
+        }
+    }
+
+    /*
+    IEnumerator ScaleThing(Transform thing, Vector3 scale, float speed)
+    {
+        Vector3 v = scale - thing.localScale;
+        while (v.magnitude > 0.5)
+        {
+            thing.localScale += v.normalized * Time.deltaTime * speed;
+            v = scale - thing.localScale;
+
+            yield return null;
+        }
+
+        thing.localScale = scale;
+        StepDone();
+    }
+    */
 }

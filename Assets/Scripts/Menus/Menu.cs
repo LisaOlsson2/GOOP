@@ -16,7 +16,6 @@ abstract public class Menu : MonoBehaviour
 
     void Update()
     {
-
         if (!keys)
         {
             foreach (KeyCode k in directionals)
@@ -65,4 +64,6 @@ abstract public class Menu : MonoBehaviour
     {
         EventSystem.current.SetSelectedGameObject(null);
     }
+
+
 }

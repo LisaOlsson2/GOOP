@@ -13,8 +13,13 @@ public class UIController : MonoBehaviour
 
     readonly float distance = 250, sensitivity = 4000;
 
+    readonly char[] itemScenes = { '0', 'Å', 'Ä' };
+
     [SerializeField]
     GameObject itemsMenu, pauseMenu;
+
+    [SerializeField]
+    Transform itemsParent;
 
     RectTransform middleThingy;
     Outline[] outlines;
@@ -22,17 +27,15 @@ public class UIController : MonoBehaviour
 
     Image thisImage;
 
-    //Temp
-    [SerializeField]
-    Image image;
-
     private void Close()
     {
+        item = tempItem;
+        tempItem = "";
+
         middleThingy.anchoredPosition = Vector2.zero;
         itemsMenu.SetActive(false);
 
-        // temp
-        SetItemUI();
+        SetItem();
     }
 
     private void Start()
@@ -49,10 +52,27 @@ public class UIController : MonoBehaviour
             return;
         }
 
-        foreach (int i in saver.GetItems())
+        bool[] b = saver.GetItems();
+        char c = saver.GetScene();
+        GameObject[] items = GameObject.FindGameObjectsWithTag("Item");
+
+        for (int i = 0; i < itemsMenu.transform.childCount; i++)
         {
-            itemsMenu.transform.GetChild(i).gameObject.SetActive(true);
+            itemsMenu.transform.GetChild(i).gameObject.SetActive(b[i]);
+
+            if (b[i] && c == itemScenes[i])
+            {
+                foreach (GameObject g in items)
+                {
+                    if (g.name == itemsMenu.transform.GetChild(i).gameObject.name)
+                    {
+                        Destroy(g);
+                        break;
+                    }
+                }
+            }
         }
+
     }
     public void ItemFound(string name)
     {
@@ -62,15 +82,13 @@ public class UIController : MonoBehaviour
 
             if (!itemObject.activeSelf && itemObject.name == name)
             {
-                print("Found " + name);
                 itemObject.SetActive(true);
 
-                if (saver == null)
+                if (saver != null)
                 {
-                    return;
+                    saver.ItemFound(i);
                 }
 
-                saver.ItemFound(i);
                 return;
             }
         }
@@ -102,29 +120,44 @@ public class UIController : MonoBehaviour
 
         if (Input.GetKeyUp(KeyCode.Mouse1))
         {
-            item = tempItem;
-            tempItem = "";
-
             Close();
             enabledController.enabled = true;
         }
     }
 
-    //Temp
-    private void SetItemUI()
+    private void SetItem() // make it so it doesn't have to be children of the player
     {
-        string[] names = { "WateringCan", "Iron", "Mp3Player" };
-        Color[] colors = { Color.red, Color.green, Color.blue };
-
-        for (int i = 0; i < names.Length; i++)
+        if (itemsParent == null)
         {
-            if (names[i] == item)
+            return;
+        }
+
+        GameObject unactivate = null;
+        GameObject activate = null;
+        for (int i = 0; i < itemsParent.childCount; i++)
+        {
+            GameObject child = itemsParent.GetChild(i).gameObject;
+
+            if (child.activeSelf)
             {
-                image.color = colors[i];
-                return;
+                unactivate = child;
+            }
+
+            if (child.name == item)
+            {
+                activate = child;
             }
         }
-        image.color = Color.clear;
+
+        if (unactivate != null)
+        {
+            unactivate.SetActive(false);
+        }
+
+        if (activate != null)
+        {
+            activate.SetActive(true);
+        }
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -181,10 +214,8 @@ public class UIController : MonoBehaviour
 
     private void Disable()
     {
-        enabledController.enabled = false;
         if (itemsMenu.activeSelf)
         {
-            item = "";
             Close();
         }
     }

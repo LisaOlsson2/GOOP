@@ -10,21 +10,11 @@ abstract public class CamController : MonoBehaviour
     private void Awake()
     {
         ui = FindObjectOfType<UIController>();
-
-        if (!enabled)
-        {
-            StartEvent s = FindObjectOfType<StartEvent>();
-            if (s != null)
-            {
-                s.enabled = true;
-            }
-        }
     }
 
     protected virtual void OnEnable()
     {
         ui.enabledController = this;
-        Cursor.lockState = CursorLockMode.Locked;
     }
 
 }

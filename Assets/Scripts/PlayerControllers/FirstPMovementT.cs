@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class FirstPMovementT : FirstPController
 {
-    readonly float speed = 25;
+    readonly float speed = 5;
 
     [SerializeField]
     float x1, x2, z1, z2;
@@ -34,11 +34,11 @@ public class FirstPMovementT : FirstPController
 
         if (Input.GetKey(right))
         {
-            transform.position += transform.right * Time.deltaTime * speed;
+            transform.position += new Vector3(transform.right.x, 0, transform.right.z) * Time.deltaTime * speed;
         }
         if (Input.GetKey(left))
         {
-            transform.position -= transform.right * Time.deltaTime * speed;
+            transform.position -= new Vector3(transform.right.x, 0, transform.right.z) * Time.deltaTime * speed;
         }
 
         if (useBordersX)

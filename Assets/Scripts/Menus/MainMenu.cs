@@ -27,7 +27,7 @@ public class MainMenu : Menu
         }
         else
         {
-            print("No Saveslots left");
+            print("No Saveslots left. You can clear an existing save through settings");
         }
     }
 

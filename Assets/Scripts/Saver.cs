@@ -9,7 +9,7 @@ public class Saver : MonoBehaviour
 
     //private readonly string[] progressPlaces = { "scene", "WateringCan", "Mp3Player", "Iron" };
 
-    public readonly string startFormat = "00000";
+    public readonly string startFormat = "S0000";
     
     private int save;
     private char[] progress;
@@ -47,16 +47,18 @@ public class Saver : MonoBehaviour
         SceneManager.LoadScene("Scene" + scene);
     }
 
-    public int[] GetItems()
+    public char GetScene()
     {
-        List<int> items = new();
+        return progress[0];
+    }
+
+    public bool[] GetItems()
+    {
+        List<bool> items = new();
 
         for (int i = 1; i < 4; i++)
         {
-            if (progress[i] == '1')
-            {
-                items.Add(i - 1);
-            }
+            items.Add(progress[i] == '1');
         }
 
         return items.ToArray();

@@ -4,22 +4,32 @@ using UnityEngine;
 
 abstract public class Events : MonoBehaviour
 {
-    protected readonly KeyCode[] interactKeys = { KeyCode.Mouse0, KeyCode.Space, KeyCode.Return };
     static UIController ui;
 
     [SerializeField]
-    protected CamController toEnable; // this can be empty if the last step changes the scene
+    protected CamController toEnable;
+
+    bool useEnabled;
 
     protected int step;
 
+    private void Awake()
+    {
+        useEnabled = toEnable == null;
+    }
+
     protected virtual void OnEnable()
     {
-        GetUI().gameObject.SetActive(false);
-
-        if (toEnable == null)
+        if (useEnabled)
         {
-            toEnable = ui.enabledController;
+            toEnable = GetUI().enabledController;
         }
+    }
+
+    protected void AbleControllers(bool able)
+    {
+        GetUI().gameObject.SetActive(able);
+        toEnable.enabled = able;
     }
 
     protected virtual void StepDone()
@@ -27,25 +37,25 @@ abstract public class Events : MonoBehaviour
         step++;
     }
 
-    protected IEnumerator MoveCam(Transform thing, Vector3[] pos, Vector3[] rot, float[,] speeds)
+    protected IEnumerator MoveThing(Transform thing, Vector3[] pos, Vector3[] rot, float[,] speeds)
     {
         for (int i = 0; i < pos.Length; i++)
         {
             Vector3 v = pos[i] - thing.position;
-            Vector3 r = rot[i] - thing.localEulerAngles;
+            Vector3 r = rot[i] - thing.eulerAngles;
             float[] f2 = { r.x, r.y, r.z };
             r = CheckChangeRotation(f2);
-            while (v.magnitude > 0.5 || r.magnitude > 2)
+            while (v.magnitude > 0.1 || r.magnitude > 2)
             {
                 if (r.magnitude > 2)
                 {
-                    thing.localRotation = Quaternion.Euler(thing.localEulerAngles + r.normalized * Time.deltaTime * speeds[i, 1]);
-                    r = rot[i] - thing.localEulerAngles;
+                    thing.rotation = Quaternion.Euler(thing.eulerAngles + r.normalized * Time.deltaTime * speeds[i, 1]);
+                    r = rot[i] - thing.eulerAngles;
                     float[] f = { r.x, r.y, r.z };
                     r = CheckChangeRotation(f);
                 }
 
-                if (v.magnitude > 0.5)
+                if (v.magnitude > 0.1)
                 {
                     thing.position += v.normalized * Time.deltaTime * speeds[i, 0];
                     v = pos[i] - thing.position;
@@ -54,9 +64,10 @@ abstract public class Events : MonoBehaviour
                 yield return null;
             }
             thing.position = pos[i];
-            thing.localRotation = Quaternion.Euler(rot[i]);
+            thing.rotation = Quaternion.Euler(rot[i]);
+
+            StepDone();
         }
-        StepDone();
     }
     Vector3 CheckChangeRotation(float[] f)
     {
@@ -69,14 +80,6 @@ abstract public class Events : MonoBehaviour
         }
 
         return new Vector3(f[0], f[1], f[2]);
-    }
-
-    protected void AllDone()
-    {
-        step = 0;
-        ui.gameObject.SetActive(true);
-        toEnable.enabled = true;
-        this.enabled = false;
     }
 
     protected void EventStartedElseWhere()
