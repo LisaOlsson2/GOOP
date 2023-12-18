@@ -29,7 +29,15 @@ abstract public class Events : MonoBehaviour
     protected void AbleControllers(bool able)
     {
         GetUI().gameObject.SetActive(able);
-        toEnable.enabled = able;
+
+        if (!useEnabled && !able)
+        {
+            GetUI().enabledController.enabled = able;
+        }
+        else
+        {
+            toEnable.enabled = able;
+        }
     }
 
     protected virtual void StepDone()
@@ -45,7 +53,7 @@ abstract public class Events : MonoBehaviour
             Vector3 r = rot[i] - thing.eulerAngles;
             float[] f2 = { r.x, r.y, r.z };
             r = CheckChangeRotation(f2);
-            while (v.magnitude > 0.1 || r.magnitude > 2)
+            while (v.magnitude > 0.2 || r.magnitude > 2)
             {
                 if (r.magnitude > 2)
                 {
@@ -55,7 +63,7 @@ abstract public class Events : MonoBehaviour
                     r = CheckChangeRotation(f);
                 }
 
-                if (v.magnitude > 0.1)
+                if (v.magnitude > 0.2)
                 {
                     thing.position += v.normalized * Time.deltaTime * speeds[i, 0];
                     v = pos[i] - thing.position;
