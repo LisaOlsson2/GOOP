@@ -9,6 +9,8 @@ public class Deer : Events
         if (step == 0 && toEnable.transform.position.z > transform.position.z - 10)
         {
             AbleControllers(false);
+
+            // make the rotation face the deer
             StartCoroutine(MoveThing(toEnable.transform, new Vector3[] { toEnable.transform.position }, new Vector3[] { Vector3.zero }, new float[,] { { 1, 20 } }));
             step = 1;
         }

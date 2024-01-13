@@ -4,12 +4,14 @@ using UnityEngine;
 
 public class FirstPMovementT : FirstPController
 {
-    readonly float speed = 5;
-
+    readonly float speed = 5, a = 0.1f, wobbleSpeed = 10;
+    
     [SerializeField]
     float x1, x2, z1, z2;
 
-    bool useBordersX, useBordersZ;
+    bool useBordersX, useBordersZ, wobble;
+
+    float t;
 
     protected override void OnEnable()
     {
@@ -26,20 +28,37 @@ public class FirstPMovementT : FirstPController
         if (Input.GetKey(forward))
         {
             transform.position += forward2 * Time.deltaTime * speed;
+            wobble = true;
         }
         if (Input.GetKey(back))
         {
             transform.position -= forward2 * Time.deltaTime * speed;
+            wobble = true;
         }
 
         if (Input.GetKey(right))
         {
             transform.position += new Vector3(transform.right.x, 0, transform.right.z) * Time.deltaTime * speed;
+            wobble = true;
         }
         if (Input.GetKey(left))
         {
             transform.position -= new Vector3(transform.right.x, 0, transform.right.z) * Time.deltaTime * speed;
+            wobble = true;
         }
+
+        if (wobble)
+        {
+            t += Time.deltaTime;
+            wobble = false;
+        }
+        else if (t > 0)
+        {
+            t = (Mathf.PI * 2) / wobbleSpeed % t;
+            t -= Time.deltaTime;
+        }
+        
+        transform.position = new Vector3(transform.position.x, Mathf.Sin(t * wobbleSpeed) * a, transform.position.z);
 
         if (useBordersX)
         {

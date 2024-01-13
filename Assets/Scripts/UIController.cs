@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class UIController : MonoBehaviour
 {
+    readonly KeyCode openItems = KeyCode.None;
+
     public Saver saver;
     public CamController enabledController;
     public string item;
@@ -45,6 +47,12 @@ public class UIController : MonoBehaviour
         colliders = new Collider2D[itemsMenu.transform.childCount];
         outlines = new Outline[itemsMenu.transform.childCount];
 
+        StartEvent s = FindObjectOfType<StartEvent>();
+        if (s != null)
+        {
+            s.enabled = true;
+        }
+
         saver = FindObjectOfType<Saver>();
 
         if (saver == null)
@@ -72,6 +80,7 @@ public class UIController : MonoBehaviour
                 }
             }
         }
+
 
     }
     public void ItemFound(string name)
@@ -104,7 +113,19 @@ public class UIController : MonoBehaviour
             this.enabled = false;
         }
 
-        if (Input.GetKeyDown(KeyCode.Mouse1))
+
+        if (itemsMenu.activeSelf)
+        {
+            middleThingy.anchoredPosition += new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y")) * sensitivity * Time.deltaTime;
+            middleThingy.anchoredPosition = middleThingy.anchoredPosition.normalized * distance;
+
+            if (Input.GetKeyUp(openItems))
+            {
+                Close();
+                enabledController.enabled = true;
+            }
+        }
+        else if (Input.GetKeyDown(openItems))
         {
             thisImage.enabled = true;
             itemsMenu.SetActive(true);
@@ -112,20 +133,9 @@ public class UIController : MonoBehaviour
             middleThingy.anchoredPosition = Vector2.up * distance;
         }
 
-        if (itemsMenu.activeSelf)
-        {
-            middleThingy.anchoredPosition += new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y")) * sensitivity * Time.deltaTime;
-            middleThingy.anchoredPosition = middleThingy.anchoredPosition.normalized * distance;
-        }
-
-        if (Input.GetKeyUp(KeyCode.Mouse1))
-        {
-            Close();
-            enabledController.enabled = true;
-        }
     }
 
-    private void SetItem() // make it so it doesn't have to be children of the player
+    private void SetItem()
     {
         if (itemsParent == null)
         {

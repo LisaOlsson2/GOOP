@@ -53,9 +53,9 @@ abstract public class Events : MonoBehaviour
             Vector3 r = rot[i] - thing.eulerAngles;
             float[] f2 = { r.x, r.y, r.z };
             r = CheckChangeRotation(f2);
-            while (v.magnitude > 0.2 || r.magnitude > 2)
+            while (v.magnitude > Time.deltaTime * speeds[i,0] || r.magnitude > Time.deltaTime * speeds[i,1])
             {
-                if (r.magnitude > 2)
+                if (r.magnitude > Time.deltaTime * speeds[i, 1])
                 {
                     thing.rotation = Quaternion.Euler(thing.eulerAngles + r.normalized * Time.deltaTime * speeds[i, 1]);
                     r = rot[i] - thing.eulerAngles;
@@ -63,7 +63,7 @@ abstract public class Events : MonoBehaviour
                     r = CheckChangeRotation(f);
                 }
 
-                if (v.magnitude > 0.2)
+                if (v.magnitude > Time.deltaTime * speeds[i, 0])
                 {
                     thing.position += v.normalized * Time.deltaTime * speeds[i, 0];
                     v = pos[i] - thing.position;
@@ -77,6 +77,27 @@ abstract public class Events : MonoBehaviour
             StepDone();
         }
     }
+
+    protected IEnumerator RotateThing(Transform thing, Vector3 rotation, float speed)
+    {
+        Vector3 r = rotation - thing.eulerAngles;
+        float[] f2 = { r.x, r.y, r.z };
+        r = CheckChangeRotation(f2);
+
+        while(r.magnitude > Time.deltaTime * speed)
+        {
+            thing.rotation = Quaternion.Euler(thing.eulerAngles + r.normalized * Time.deltaTime * speed);
+            r = rotation - thing.eulerAngles;
+            float[] f = { r.x, r.y, r.z };
+            r = CheckChangeRotation(f);
+            yield return null;
+        }
+
+        thing.rotation = Quaternion.Euler(rotation);
+
+        StepDone();
+    }
+
     Vector3 CheckChangeRotation(float[] f)
     {
         for (int i = 0; i < 3; i++)
@@ -88,6 +109,21 @@ abstract public class Events : MonoBehaviour
         }
 
         return new Vector3(f[0], f[1], f[2]);
+    }
+
+    protected void ChangeScene(char c)
+    {
+        Saver s = GetUI().saver;
+
+        if (s != null)
+        {
+            s.ChangeGameScene(c);
+        }
+        else
+        {
+            UnityEngine.SceneManagement.SceneManager.LoadScene("Scene" + c);
+        }
+
     }
 
     protected void EventStartedElseWhere()

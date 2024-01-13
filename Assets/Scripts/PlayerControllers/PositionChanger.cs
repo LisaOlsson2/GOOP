@@ -6,13 +6,15 @@ public class PositionChanger : CamController
 {
     readonly float reach = 12;
 
-    Camera cam;
+    public Camera cam;
 
     bool[] changed;
 
     protected override void OnEnable()
     {
         base.OnEnable();
+        Cursor.lockState = CursorLockMode.None;
+
         cam = GetComponent<Camera>();
 
         changed = new bool[GameObject.Find("ClickThings").transform.childCount];
@@ -36,7 +38,12 @@ public class PositionChanger : CamController
                         changed[info.transform.GetSiblingIndex()] = true;
                     }
                 }
+                else if (info.transform.CompareTag("Event"))
+                {
+                    ui.StartEvent(info.transform.GetComponent<Events>());
+                }
             }
+
         }
     }
 }

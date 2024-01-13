@@ -60,7 +60,7 @@ public class VolumeChanger : MonoBehaviour, IDeselectHandler
 
         foreach (AudioSource a in audioSources)
         {
-            a.volume = volume / 10;
+            a.volume = volume / 10f;
         }
     }
 

@@ -15,6 +15,9 @@ public class Balcony : Events
     Animator animator;
     BoxCollider bc;
 
+    [SerializeField]
+    GameObject ws;
+
     private void Start()
     {
         text = GameObject.Find("TextBox").GetComponent<Text>();
@@ -52,14 +55,21 @@ public class Balcony : Events
     {
         if (step == 5)
         {
+            if (Input.GetKeyDown(KeyCode.Mouse0) && !ws.activeSelf)
+            {
+                ws.SetActive(true);
+            }
+
             if (Input.GetKeyDown(KeyCode.W))
             {
+                ws.SetActive(false);
                 text.text = "";
                 StartCoroutine(ChildrenOfChild(new int[][] { new int[] { 1}, new int[] {1, 2} }));
                 step = 7;
             }
-            else if (Input.GetKeyDown(KeyCode.S))
+            if (Input.GetKeyDown(KeyCode.S))
             {
+                ws.SetActive(false);
                 text.text = "";
                 End();
             }
@@ -167,21 +177,4 @@ public class Balcony : Events
             StepDone();
         }
     }
-
-    /*
-    IEnumerator ScaleThing(Transform thing, Vector3 scale, float speed)
-    {
-        Vector3 v = scale - thing.localScale;
-        while (v.magnitude > 0.5)
-        {
-            thing.localScale += v.normalized * Time.deltaTime * speed;
-            v = scale - thing.localScale;
-
-            yield return null;
-        }
-
-        thing.localScale = scale;
-        StepDone();
-    }
-    */
 }
