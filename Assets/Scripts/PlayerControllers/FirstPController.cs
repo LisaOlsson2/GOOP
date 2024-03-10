@@ -12,7 +12,7 @@ abstract public class FirstPController : CamController
     readonly List<Outlines> outlines = new();
 
     // movement
-    readonly float sensitivity = 8;
+    readonly float sensitivity = 5;
     protected Vector3 forward2;
 
 
@@ -52,7 +52,7 @@ abstract public class FirstPController : CamController
                 GetOutlines(hit).enabled = true;
             }
             
-            if (Input.GetKeyDown(KeyCode.Mouse0))
+            if (ui.InteractKey())
             {
                 Interact(hit);
             }
@@ -62,7 +62,7 @@ abstract public class FirstPController : CamController
             hit = null;
             outlines[hitListPlace].enabled = false;
         }
-        else if (Input.GetKeyDown(KeyCode.Mouse0))
+        else if (ui.InteractKey())
         {
             if (Physics.Raycast(transform.position, transform.forward, out RaycastHit info2, reach, LayerMask.GetMask("LeftClickable")))
             {

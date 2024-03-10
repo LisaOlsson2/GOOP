@@ -15,7 +15,11 @@ public class FirstPFall : Events
     {
         base.OnEnable();
 
+        AbleControllers(false);
+
         ((PositionChanger)toEnable).cam.orthographic = false;
+
+
 
         toEnable.transform.position = Vector3.forward * floor.transform.position.z;
         toEnable.transform.rotation = Quaternion.Euler(Vector3.up * 180);
@@ -25,7 +29,7 @@ public class FirstPFall : Events
 
     }
 
-    private void Update()
+    protected override void Update()
     {
         if (step == 0 && toEnable.transform.position.y < -2)
         {
@@ -33,10 +37,10 @@ public class FirstPFall : Events
             StepDone();
         }
         
-        if (step == 2 && toEnable.transform.position.y < -500)
+        if (step == 2 && toEnable.transform.position.y < -50)
         {
             toEnable.transform.rotation = Quaternion.Euler(Vector3.right * 90);
-            toEnable.transform.GetChild(0).GetComponent<AudioSource>().Play();
+            GetUI().PlaySound("trumma");
             StepDone();
         }
 

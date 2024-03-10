@@ -6,6 +6,7 @@ abstract public class CamController : MonoBehaviour
 {
     protected UIController ui;
 
+
     protected readonly KeyCode forward = KeyCode.W, back = KeyCode.S, right = KeyCode.D, left = KeyCode.A;
     private void Awake()
     {
@@ -47,5 +48,10 @@ abstract public class CamController : MonoBehaviour
         {
             ui.StartEvent(hitSaved.GetComponent<Events>());
         }
+    }
+
+    public void Collision(Transform t)
+    {
+        Interact(t);
     }
 }

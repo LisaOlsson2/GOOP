@@ -15,7 +15,7 @@ public class TV : Events
     Sprite[] sprites;
 
 
-    void Update()
+    protected override void Update()
     {
         if (step == 1)
         {

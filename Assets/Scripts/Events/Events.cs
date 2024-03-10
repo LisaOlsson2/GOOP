@@ -26,6 +26,14 @@ abstract public class Events : MonoBehaviour
         }
     }
 
+    protected virtual void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape) && !GetUI().gameObject.activeSelf && !ui.pauseMenu.gameObject.activeSelf)
+        {
+            ui.pauseMenu.Open(ui);
+        }
+    }
+
     protected void AbleControllers(bool able)
     {
         GetUI().gameObject.SetActive(able);
@@ -55,6 +63,7 @@ abstract public class Events : MonoBehaviour
             r = CheckChangeRotation(f2);
             while (v.magnitude > Time.deltaTime * speeds[i,0] || r.magnitude > Time.deltaTime * speeds[i,1])
             {
+
                 if (r.magnitude > Time.deltaTime * speeds[i, 1])
                 {
                     thing.rotation = Quaternion.Euler(thing.eulerAngles + r.normalized * Time.deltaTime * speeds[i, 1]);
@@ -86,6 +95,7 @@ abstract public class Events : MonoBehaviour
 
         while(r.magnitude > Time.deltaTime * speed)
         {
+
             thing.rotation = Quaternion.Euler(thing.eulerAngles + r.normalized * Time.deltaTime * speed);
             r = rotation - thing.eulerAngles;
             float[] f = { r.x, r.y, r.z };
@@ -131,7 +141,7 @@ abstract public class Events : MonoBehaviour
         GetUI().StartEvent(this);
     }
 
-    UIController GetUI()
+    protected UIController GetUI()
     {
         if (ui == null)
         {

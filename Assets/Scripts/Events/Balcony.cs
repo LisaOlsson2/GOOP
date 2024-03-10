@@ -3,24 +3,31 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Balcony : Events
+public class Balcony : Talker
 {
-    readonly string[] lines = { "...", "Won't you join me for a bit?", "blabalbabalb", "You aren’t talking, but you’re saying a lot", "blabalbabalb"};
-    readonly float delay = 0.05f;
+    // skriv monolog
+
+    readonly string[] lines = { "...", "Oh hello there young one       \nWhat's your name?", "...", "Not much of a talker, huh?", "Well you're welcome to join me, listen while i reflect"};
+    readonly string[] otherLines = {"blablabbaalbalb" , "ablblbabla", "balbblbb"};
+    readonly float distance = 6;
+    readonly int end = 20;
 
     readonly float[,] doorSpeed = { { 10, 100 } }, camSpeed = { { 5, 50}, { 3, 30} };
     readonly Vector3[] doorPos = new Vector3[1], doorRot = { Vector3.up * 90 }, camPos = new Vector3[2], camRot = { Vector3.up * 90, Vector3.up * 90};
 
-    Text text;
     Animator animator;
     BoxCollider bc;
 
     [SerializeField]
-    GameObject ws;
+    Sprite door;
+
+    [SerializeField]
+    GameObject buttonsParent;
+
+    readonly List<SpriteRenderer> turners = new();
 
     private void Start()
     {
-        text = GameObject.Find("TextBox").GetComponent<Text>();
         animator = GetComponent<Animator>();
         bc = GetComponent<BoxCollider>();
     }
@@ -29,59 +36,36 @@ public class Balcony : Events
     {
         if (step == 0)
         {
-            base.OnEnable();
+            for (int i = 0; i < transform.parent.childCount; i++)
+            {
+                if (transform.parent.GetChild(i) != transform && transform.parent.GetChild(i).position.x > 0)
+                {
+                    turners.Add(transform.parent.GetChild(i).GetComponent<SpriteRenderer>());
+                }
+            }
 
             transform.SetParent(null);
 
-            doorPos[0] = new Vector3(1.5f, 0, toEnable.transform.position.z);
+            doorPos[0] = new Vector3(distance, 0, toEnable.transform.position.z);
             StartCoroutine(MoveThing(transform, doorPos, doorRot, doorSpeed));
         }
         else if (step == 2)
         {
-            AbleControllers(false);
+            base.OnEnable();
 
-            camPos[0] = new Vector3(1, toEnable.transform.position.y, transform.position.z);
-            camPos[1] = new Vector3(1.5f, toEnable.transform.position.y, transform.position.z);
+            foreach (SpriteRenderer s in turners)
+            {
+                s.sortingOrder = -3;
+            }
+
+            camPos[0] = new Vector3(distance - 0.5f, toEnable.transform.position.y, transform.position.z);
+            camPos[1] = new Vector3(distance, toEnable.transform.position.y, transform.position.z);
 
             StartCoroutine(MoveThing(toEnable.transform, camPos, camRot, camSpeed));
         }
         else
         {
             print("BAD");
-        }
-    }
-
-    private void Update()
-    {
-        if (step == 5)
-        {
-            if (Input.GetKeyDown(KeyCode.Mouse0) && !ws.activeSelf)
-            {
-                ws.SetActive(true);
-            }
-
-            if (Input.GetKeyDown(KeyCode.W))
-            {
-                ws.SetActive(false);
-                text.text = "";
-                StartCoroutine(ChildrenOfChild(new int[][] { new int[] { 1}, new int[] {1, 2} }));
-                step = 7;
-            }
-            if (Input.GetKeyDown(KeyCode.S))
-            {
-                ws.SetActive(false);
-                text.text = "";
-                End();
-            }
-        }
-        else if (step == 9)
-        {
-            if (Input.GetKeyDown(KeyCode.Mouse0))
-            {
-                text.text = "";
-                StartCoroutine(ChildrenOfChild(new int[][] { new int[]{2,1}, new int[] { 1 }}));
-                step = 10;
-            }
         }
     }
 
@@ -95,7 +79,12 @@ public class Balcony : Events
         }
         else if (step == 2)
         {
-            bc.size = new Vector3(3, 6, bc.size.z);
+            animator.enabled = false;
+
+            SpriteRenderer sr = GetComponent<SpriteRenderer>();
+            sr.sprite = door;
+            sr.color = Color.white;
+            bc.size = new Vector3(10, 10, bc.size.z);
             enabled = false;
         }
         else if (step == 3)
@@ -104,46 +93,43 @@ public class Balcony : Events
         }
         else if (step == 4)
         {
-            StartCoroutine(ShowText(0, 1));
+            StartCoroutine(ShowText(lines));
+        }
+        else if (step == 5)
+        {
+            buttonsParent.SetActive(true);
+            Cursor.lockState = CursorLockMode.None;
+        }
+        else if (step == 6)
+        {
+            text.text = "";
+            StartCoroutine(ShowText(otherLines));
         }
         else if (step == 7)
         {
+            End();
+        }
+        else if (step == end + 1)
+        {
+            foreach (SpriteRenderer s in turners)
+            {
+                s.sortingOrder = 0;
+            }
+
             transform.GetChild(0).gameObject.SetActive(false);
             step = 2;
             AbleControllers(true);
             enabled = false;
         }
-        else if (step == 8)
-        {
-            StartCoroutine(ShowText(2, lines.Length - 1));
-        }
-        else if (step == 11)
-        {
-            End();
-        }
     }
 
-    IEnumerator ShowText(int start, int end)
+    public void Join()
     {
-        for (int i = start; i <= end; i++)
-        {
-            char[] brokenLine = lines[i].ToCharArray();
-
-            foreach (char c in brokenLine)
-            {
-                text.text += c;
-                yield return new WaitForSeconds(delay);
-            }
-
-            if (i < end)
-            {
-                yield return new WaitUntil(Clicked);
-                text.text = "";
-            }
-        }
         StepDone();
     }
 
+
+    /*
     IEnumerator ChildrenOfChild(int[][] indexes)
     {
         foreach (int[] ints in indexes)
@@ -157,18 +143,18 @@ public class Balcony : Events
         }
         StepDone();
     }
+    */
 
-    void End()
+    public override void End()
     {
-        step = 6;
+        base.End();
+
+        Cursor.lockState = CursorLockMode.Locked;
+        step = end;
         StartCoroutine(MoveThing(toEnable.transform, new Vector3[] { camPos[0] }, new Vector3[] { camRot[0] }, new float[,] { { camSpeed[1, 0], camSpeed[1, 1] } }));
     }
 
 
-    bool Clicked()
-    {
-        return Input.GetKeyDown(KeyCode.Mouse0);
-    }
 
     public void AnimationFinished(string animation)
     {

@@ -22,7 +22,7 @@ public class StartEvent : Events
     protected override void StepDone()
     {
         AbleControllers(true);
-        Destroy(image.gameObject);
+        image.gameObject.SetActive(false);
         Destroy(this);
     }
 

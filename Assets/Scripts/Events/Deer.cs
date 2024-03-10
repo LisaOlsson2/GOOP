@@ -4,15 +4,18 @@ using UnityEngine;
 
 public class Deer : Events
 {
-    private void Update()
+    protected override void Update()
     {
         if (step == 0 && toEnable.transform.position.z > transform.position.z - 10)
         {
+
             AbleControllers(false);
 
-            // make the rotation face the deer
-            StartCoroutine(MoveThing(toEnable.transform, new Vector3[] { toEnable.transform.position }, new Vector3[] { Vector3.zero }, new float[,] { { 1, 20 } }));
+            Vector3 v = transform.position - toEnable.transform.position;
+
             step = 1;
+
+            StartCoroutine(RotateThing(toEnable.transform, Vector3.up * (Mathf.Atan(v.x/v.z) * Mathf.Rad2Deg), 20));
         }
     }
 
@@ -30,8 +33,15 @@ public class Deer : Events
     {
         if (animation == "Deer")
         {
-            AbleControllers(true);
-            Destroy(gameObject);
+            StartCoroutine(Wait(2));
         }
+    }
+
+    IEnumerator Wait(float seconds)
+    {
+        yield return new WaitForSeconds(seconds);
+        AbleControllers(true);
+        Destroy(gameObject);
+
     }
 }

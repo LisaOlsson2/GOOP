@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-abstract public class Menu : MonoBehaviour
+public class Menu : MonoBehaviour
 {
     [SerializeField]
     Selectable firstSelection;
@@ -60,10 +60,13 @@ abstract public class Menu : MonoBehaviour
         return Input.mousePosition == mousePos;
     }
 
-    protected void UnselectCurrent()
+    public void UnselectCurrent()
     {
         EventSystem.current.SetSelectedGameObject(null);
     }
 
-
+    public void Fullscreen()
+    {
+        Screen.fullScreen = !Screen.fullScreen;
+    }
 }

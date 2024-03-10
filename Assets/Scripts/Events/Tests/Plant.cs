@@ -86,7 +86,7 @@ public class Plant : Events
         }
     }
 
-    private void Update()
+    protected override void Update()
     {
         if (step == 3)
         {

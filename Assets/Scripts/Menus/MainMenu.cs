@@ -8,55 +8,43 @@ public class MainMenu : Menu
     [SerializeField]
     Transform contineMenu;
 
-    int saveSlots;
-
-    public void NewSave()
+    public void Play(Transform save)
     {
         Saver saver = FindObjectOfType<Saver>();
 
-
-        saveSlots = contineMenu.childCount - 1;
-        int saves = PlayerPrefs.GetInt("saves");
-
-        if (saves < saveSlots - 1)
+        if (!PlayerPrefs.HasKey("save" + save.GetSiblingIndex()))
         {
-            saves++;
-            PlayerPrefs.SetInt("saves", saves);
-            PlayerPrefs.SetString("save" + saves, saver.startFormat);
-            saver.StartPlaying(saves);
+            PlayerPrefs.SetString("save" + save.GetSiblingIndex(), saver.startFormat);
         }
-        else
-        {
-            print("No Saveslots left. You can clear an existing save through settings");
-        }
+
+        saver.StartPlaying(save.GetSiblingIndex());
     }
 
     public void ShowSaves(Transform menu)
     {
         // starts at 1 because the first child is the back button
-        for (int i = 1; i < PlayerPrefs.GetInt("saves") + 1; i++)
+        for (int i = 1; i < menu.childCount; i++)
         {
-            string add = "";
+            string texty = "Empty";
 
-            if (menu.gameObject.name == "Clear")
+            if (PlayerPrefs.HasKey("save" + i))
             {
-                add = "\n" + PlayerPrefs.GetString("save" + i);
+                texty = "Save" + i;
+
+                if (menu.gameObject.name == "Clear")
+                {
+                    texty += "\n" + PlayerPrefs.GetString("save" + i);
+                }
             }
 
-            menu.GetChild(i).GetComponent<Text>().text = "Save " + i + add;
-            menu.GetChild(i).GetComponent<Button>().interactable = true;
+            menu.GetChild(i).GetComponent<Text>().text = texty;
         }
-    }
-
-    public void Continue(Transform save)
-    {
-        FindObjectOfType<Saver>().StartPlaying(save.GetSiblingIndex());
     }
 
     public void ClearSave(Text save)
     {
-        PlayerPrefs.SetString("save" + save.transform.GetSiblingIndex(), FindObjectOfType<Saver>().startFormat);
-        save.text = "Save " + save.transform.GetSiblingIndex() + "\n" + PlayerPrefs.GetString("save" + save.transform.GetSiblingIndex());
+        PlayerPrefs.DeleteKey("save" + save.transform.GetSiblingIndex());
+        save.text = "Empty";
         UnselectCurrent();
     }
 

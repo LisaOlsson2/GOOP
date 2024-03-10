@@ -8,25 +8,36 @@ public class VolumeChanger : MonoBehaviour, IDeselectHandler
 {
     readonly KeyCode[] keys = { KeyCode.Return, KeyCode.Space, KeyCode.W, KeyCode.S, KeyCode.Escape };
 
-    readonly int defaultVolume = 5;
+    [SerializeField]
+    GameObject source;
 
     [SerializeField]
-    Selectable sound;
+    Selectable button;
+    
     Slider slider;
 
     AudioSource[] audioSources;
-
     public void Awoken()
     {
-        if (!PlayerPrefs.HasKey("volume"))
+        if (source == null)
         {
-            PlayerPrefs.SetInt("volume", defaultVolume);
+            Saver saver = FindObjectOfType<Saver>();
+
+            if (saver != null)
+            {
+                source = saver.gameObject;
+            }
+            else
+            {
+                source = gameObject;
+            }
         }
 
-        audioSources = FindObjectsOfType<AudioSource>();
+        audioSources = source.GetComponents<AudioSource>();
+
         slider = GetComponent<Slider>();
         VolumeUpdated();
-        slider.value = PlayerPrefs.GetInt("volume");
+        slider.value = PlayerPrefs.GetInt(gameObject.name);
     }
 
     private void Update()
@@ -47,21 +58,22 @@ public class VolumeChanger : MonoBehaviour, IDeselectHandler
 
     void Done()
     {
-        PlayerPrefs.SetInt("volume", (int)slider.value);
+        PlayerPrefs.SetInt(gameObject.name, (int)slider.value);
         VolumeUpdated();
-        sound.gameObject.SetActive(true);
-        sound.Select();
+        button.gameObject.SetActive(true);
+        button.Select();
         gameObject.SetActive(false);
     }
 
-    void VolumeUpdated()
+    protected virtual void VolumeUpdated()
     {
-        int volume = PlayerPrefs.GetInt("volume");
+        int volume = PlayerPrefs.GetInt(gameObject.name);
 
         foreach (AudioSource a in audioSources)
         {
             a.volume = volume / 10f;
         }
     }
+
 
 }

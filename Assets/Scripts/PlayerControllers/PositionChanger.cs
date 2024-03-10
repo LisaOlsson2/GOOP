@@ -14,15 +14,16 @@ public class PositionChanger : CamController
     {
         base.OnEnable();
         Cursor.lockState = CursorLockMode.None;
+        ui.Hide(true);
 
         cam = GetComponent<Camera>();
 
-        changed = new bool[GameObject.Find("ClickThings").transform.childCount];
+        changed = new bool[GameObject.Find("spritechangers").transform.childCount];
     }
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Mouse0))
+        if (ui.InteractKey())
         {
             if (Physics.Raycast(cam.ScreenToWorldPoint(Input.mousePosition), transform.forward, out RaycastHit info, reach, LayerMask.GetMask("LeftClickable")))
             {
@@ -38,12 +39,17 @@ public class PositionChanger : CamController
                         changed[info.transform.GetSiblingIndex()] = true;
                     }
                 }
-                else if (info.transform.CompareTag("Event"))
+                else if (info.transform.CompareTag("OnOff"))
                 {
-                    ui.StartEvent(info.transform.GetComponent<Events>());
+                    info.transform.GetChild(0).gameObject.SetActive(!info.transform.GetChild(0).gameObject.activeSelf);
+                }
+                else
+                {
+                    Interact(info.transform);
                 }
             }
 
         }
     }
+
 }
